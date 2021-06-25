@@ -81,7 +81,7 @@ public class ModuleFishingRodVelocity extends Module {
                 if (!fishHook.isValid() || fishHook.isOnGround()) cancel();
 
                 // We check both conditions as sometimes it's underwater but in seagrass, or when bobbing not underwater but the material is water
-                if (!fishHook.isInWater() && fishHook.getWorld().getBlockAt(fishHook.getLocation()).getType() != Material.WATER) {
+                if (fishHook.getWorld().getBlockAt(fishHook.getLocation()).getType() != Material.WATER) {
                     final Vector fVelocity = fishHook.getVelocity();
                     fVelocity.setY(fVelocity.getY() - 0.01);
                     fishHook.setVelocity(fVelocity);

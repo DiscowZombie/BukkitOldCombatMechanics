@@ -49,12 +49,12 @@ public class ModuleOldPotionEffects extends Module {
     public ModuleOldPotionEffects(OCMMain plugin) {
         super(plugin, "old-potion-effects");
 
-        try {
+        /*try {
             //Turtle Master potion has two effects and Bukkit only returns one with #getEffectType()
             EXCLUDED_POTION_TYPES.add(PotionType.TURTLE_MASTER);
         } catch (NoSuchFieldError e) {
             debug("Skipping excluding a potion (probably older server version)");
-        }
+        }*/
 
         reload();
     }

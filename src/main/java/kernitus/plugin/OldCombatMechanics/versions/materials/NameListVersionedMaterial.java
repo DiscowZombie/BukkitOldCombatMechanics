@@ -38,7 +38,7 @@ public class NameListVersionedMaterial implements VersionedMaterial {
                 return new NameListVersionedMaterial(material);
             }
 
-            material = Material.matchMaterial(name, true);
+            material = Material.matchMaterial(name);
             if(material != null){
                 return new NameListVersionedMaterial(material);
             }

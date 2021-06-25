@@ -48,11 +48,11 @@ public class ModuleDisableOffHand extends Module {
         final ClickType clickType = e.getClick();
 
         try {
-            if (clickType == ClickType.SWAP_OFFHAND){
+            /*if (clickType == ClickType.SWAP_OFFHAND){
                 e.setResult(Event.Result.DENY);
                 e.setCancelled(true);
                 return;
-            }
+            }*/
         } catch (NoSuchFieldError ignored){} // For versions below 1.16
 
         if(e.getInventory().getType() != InventoryType.CRAFTING || e.getSlot() != OFFHAND_SLOT) return;

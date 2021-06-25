@@ -8,30 +8,33 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
+import java.util.Objects;
+
 /**
  * Prevents the noise introduced when shooting with a bow to make arrows go straight.
  */
 public class ModuleDisableProjectileRandomness extends Module {
 
     private static double EPSILON;
-    public ModuleDisableProjectileRandomness(OCMMain plugin){
+
+    public ModuleDisableProjectileRandomness(OCMMain plugin) {
         super(plugin, "disable-projectile-randomness");
         reload();
     }
 
     @Override
-    public void reload(){
+    public void reload() {
         EPSILON = module().getDouble("epsilon");
     }
 
     @EventHandler
-    public void onProjectileLaunch(ProjectileLaunchEvent e){
+    public void onProjectileLaunch(ProjectileLaunchEvent e) {
         Projectile projectile = e.getEntity();
         ProjectileSource shooter = projectile.getShooter();
 
-        if(shooter instanceof Player){
+        if (shooter instanceof Player) {
             Player player = (Player) shooter;
-            if(!isEnabled(player.getWorld())) return;
+            if (!isEnabled(player.getWorld())) return;
             debug("Making projectile go straight", player);
 
             Vector playerDirection = player.getLocation().getDirection().normalize();
@@ -44,11 +47,10 @@ public class ModuleDisableProjectileRandomness extends Module {
             // The following works because using rotate modifies the vector, so we must double it to undo the rotation
             // The vector is rotated around the Y axis and matched by checking only the X and Z values
             // Angles is specified in radians, where 10° = 0.17 radians
-            if(!fuzzyVectorEquals(projectileDirection, playerDirection)) { // If the projectile is not going straight
-                if (fuzzyVectorEquals(projectileDirection, playerDirection.rotateAroundY(0.17))) {
+            if (!fuzzyVectorEquals(projectileDirection, playerDirection)) { // If the projectile is not going straight
+                if (fuzzyVectorEquals(projectileDirection, rotateAroundY(playerDirection, 0.17))) {
                     debug("10° Offset", player);
-                }
-                else if (fuzzyVectorEquals(projectileDirection, playerDirection.rotateAroundY(-0.35)))
+                } else if (fuzzyVectorEquals(projectileDirection, rotateAroundY(playerDirection, -0.35)))
                     //arrowVelocity.rotateAroundY(-10);
                     debug("-10° Offset", player);
             }
@@ -58,7 +60,16 @@ public class ModuleDisableProjectileRandomness extends Module {
         }
     }
 
-    private boolean fuzzyVectorEquals(Vector a, Vector b){
+    private Vector rotateAroundY(Vector vector, double angle) {
+        Objects.requireNonNull(vector);
+        double angleCos = Math.cos(angle);
+        double angleSin = Math.sin(angle);
+        double x = angleCos * vector.getX() + angleSin * vector.getZ();
+        double z = -angleSin * vector.getX() + angleCos * vector.getZ();
+        return new Vector(x, vector.getY(), z);
+    }
+
+    private boolean fuzzyVectorEquals(Vector a, Vector b) {
         return Math.abs(a.getX() - b.getX()) < EPSILON &&
                 Math.abs(a.getZ() - b.getZ()) < EPSILON;
     }
